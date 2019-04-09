@@ -1,0 +1,211 @@
+\documentclass[catalan]{scrartcl}
+
+% encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{babel}
+
+% formatting and fixes
+\frenchspacing
+\usepackage[style=spanish]{csquotes}
+\MakeAutoQuote{«}{»}
+
+% general design preferences (page, paragraph indent/space, margins, class options, ...)
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{0pt}
+%\pagestyle{plain}
+
+% ADD ANY SPECIFIC PACKAGES HERE
+% (CHEMISTRY, CODE, PUBLISHING)
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{commath}
+\usepackage{mathtools}
+\usepackage{nicefrac}
+\usepackage{minted}
+
+% other options
+
+%\usemintedstyle{xcode}
+\setminted{
+  %frame=leftline,
+  %framesep=12pt,
+  xleftmargin=15pt,
+}
+
+% hyperlink setup / metadata
+\usepackage{hyperref}
+\AfterPreamble{\hypersetup{
+  pdftitle={Estudi previ P1 — PSAVC QP2019},
+  %pdfsubject={PSAVC},
+}}
+
+% document metadata
+\author{Alba Mendez}
+\title{Estudi previ pràctica 2\\
+{\small PSAVC QP2019}}
+\date{9 d'abril de 2019}
+
+\begin{document}
+
+%\begin{minipage}{\columnwidth}
+\maketitle
+%\end{minipage}
+
+\paragraph{Qüestió 1.1.}
+
+El nombre de gols que marca un equip ($g$) es pot modelar com una V.A. de
+Poisson amb la distribució següent:
+%
+\begin{equation}
+  P(g) = \frac{\lambda^g \, e^{-\lambda} }{g!}, \quad g = 0,1,2,\hdots
+\end{equation}
+%
+Cal demostrar que $E\{g\} = \lambda$ i $E\{(g - \lambda)^2\} = \lambda$.
+
+Per fer la primera demostració fem el sumatori sobre tots els valors,
+i tenint en compte que $\sum^{\infty}_{n=0} \lambda \frac{\lambda^n}{n!}$
+és la sèrie de Taylor de $\lambda e^\lambda$:
+%
+\begin{align}
+  E\{g\} &= \sum^{\infty}_{g=-\infty} g \, P(g)
+\\
+  E\{g\} &= \sum^{\infty}_{g=0} g \frac{\lambda^g \, e^{-\lambda} }{g!}
+\\
+  E\{g\} &= e^{-\lambda} \, \sum^{\infty}_{g=1} g \frac{\lambda^g }{g!}
+\\
+  E\{g\} &= e^{-\lambda} \, \sum^{\infty}_{g=1} \frac{\lambda^g }{(g-1)!}
+\\
+  E\{g\} &= e^{-\lambda} \, \sum^{\infty}_{g=0} \frac{\lambda^{g+1} }{g!}
+\\
+  E\{g\} &= e^{-\lambda} \, \lambda e^\lambda
+\\
+  E\{g\} &= \lambda
+\end{align}
+%
+Queda demostrat. Ara, per a la segona demostració fem servir
+$E\{(X - E\{X\})^2\} = E\{X^2\} - E\{X\}^2$ i tenint en compte que
+$\sum^{\infty}_{n=0} \lambda^2 \frac{\lambda^n}{n!}$ és la sèrie de Taylor
+de $\lambda^2 e^\lambda$:
+%
+\begin{align}
+  E\{(g - \lambda)^2\} &= E\{ g^2 \} - \lambda^2
+\\
+  E\{(g - \lambda)^2\} &= \left[ \sum^\infty_{g=-\infty} g^2
+    P(g) \right] - \lambda^2
+\\
+  E\{(g - \lambda)^2\} &= e^{-\lambda} \, \left[ \sum^\infty_{g=0} g^2
+    \frac{\lambda^g }{g!} \right] - \lambda^2
+\\
+  E\{(g - \lambda)^2\} &= e^{-\lambda} \, \left[ \sum^\infty_{g=1} g
+    \frac{\lambda^g }{(g-1)!} \right] - \lambda^2
+%
+\\
+  E\{(g - \lambda)^2\} &= e^{-\lambda} \, \left[ \sum^\infty_{g=1} [(g-1) + 1]
+    \frac{\lambda^g }{(g-1)!} \right] - \lambda^2
+\\
+  E\{(g - \lambda)^2\} &= e^{-\lambda} \, \left[ \sum^\infty_{g=2}
+    \frac{\lambda^g }{(g-2)!} +
+    \sum^\infty_{g=1} \frac{\lambda^g }{(g-1)!} \right] - \lambda^2
+\\
+  E\{(g - \lambda)^2\} &= e^{-\lambda} \, \left[ \lambda^2 e^\lambda +
+    \lambda e^\lambda \right] - \lambda^2
+\\
+  E\{(g - \lambda)^2\} &= \lambda
+%
+\end{align}
+
+\paragraph{Qüestió 1.2.}
+
+Cal trobar la mitjana, la variància i l'error quadràtic mig dels
+tres estimadors esmentats.
+
+Tots els estimadors son una combinació lineal de les variables
+($\mathbf{v}^T \cdot \mathbf{g}$). La esperança és lineal, per tant
+$E\{ \mathbf{v}^T \cdot \mathbf{g} \} \Leftrightarrow
+\mathbf{v}^T \cdot E\{\mathbf{g}\} \Leftrightarrow
+\mathbf{v}^T \cdot \lambda\mathbf{1}$.
+A més les variables són incorrelades, per tant
+$Var\{ \mathbf{v}^T \cdot \mathbf{g} \}
+\Leftrightarrow \sum_{i=1}^N v_i^2 \cdot Var\{g_i\} \Leftrightarrow
+\lambda \sum_{i=0}^N v_i^2$.
+
+Per a l'estimador $\hat{\lambda}_A^N$, $\mathbf{v} =
+\frac{2}{N(N+1)} \mathbf{n}$:
+%
+\begin{align}
+  E\{\hat{\lambda}_A^N\} &= \lambda \frac{2}{N(N+1)} \sum_{n=1}^N n = \lambda
+\\
+  Var\{\hat{\lambda}_A^N\} &= \lambda \frac{4}{N^2(N+1)^2}
+    \sum_{n=1}^N n^2
+    = \lambda \frac{2(2N+1)}{3N(N+1)}
+\end{align}
+%
+Per a l'estimador $\hat{\lambda}_B^N$, $\mathbf{v} =
+\frac{1}{N} \mathbf{1}$:
+%
+\begin{align}
+  E\{\hat{\lambda}_B^N\} &= \lambda \frac{1}{N} N = \lambda
+\\
+  Var\{\hat{\lambda}_B^N\} &= \lambda \frac{1}{N^2} N
+    = \frac{\lambda}{N}
+\end{align}
+%
+Per a l'estimador $\hat{\lambda}_C^N$, $\mathbf{v} =
+\frac{1}{2N} \mathbf{1}$:
+%
+\begin{align}
+  E\{\hat{\lambda}_C^N\} &= \lambda \frac{1}{2N} N = \frac{\lambda}{2}
+\\
+  Var\{\hat{\lambda}_C^N\} &= \lambda \frac{1}{4N^2} N
+    = \frac{\lambda}{4N}
+\end{align}
+
+Els primers dos estimadors són no esbiaixats, per tant l'MSE és igual a la
+variància. En l'últim, el biaix és $\frac{\lambda}{2}$ i l'MSE és
+$\frac{\lambda}{4N} + \frac{\lambda^2}{4} = \frac{\lambda}{4} (\frac{1}{N} + \lambda)$.
+
+\paragraph{Qüestió 1.3.}
+
+Cal trobar la funció de \emph{log-likelihood} del problema i obtenir la cota de
+Cramér-Rao, i determinar si algun dels estimadors anteriors és eficient.
+
+La funció de \emph{log-likelihood} és:
+%
+\begin{align}
+  \ell(\mathbf{g};\lambda) &= \ln P(\mathbf{g};\lambda) =
+    \ln \prod_{i=1}^N \frac{\lambda^{g_i} e^{-\lambda}}{g_i!}
+\\
+  \ell(\mathbf{g};\lambda) &=
+    \sum_{i=1}^N \ln \frac{\lambda^{g_i} e^{-\lambda}}{g_i!}
+\\
+  \ell(\mathbf{g};\lambda) &=
+    \sum_{i=1}^N g_i \ln \lambda -\lambda - \ln g_i!
+\\
+  \ell(\mathbf{g};\lambda) &=
+    -\lambda + \ln \lambda \sum_{i=1}^N g_i - \sum_{i=1}^N \ln g_i!
+\end{align}
+%
+La cota de Cramér-Rao és:
+%
+\begin{align}
+  CRB &= \left[ -E\left\{ \pd[2]{}{\lambda} \ell(\mathbf{g};\lambda) \right\} \right]^{-1}
+\\
+  CRB &= \left[ -E\left\{ \pd[2]{}{\lambda}
+    \left(-\lambda + \ln \lambda \sum_{i=1}^N g_i - \sum_{i=1}^N \ln g_i! \right)
+  \right\} \right]^{-1}
+\\
+  CRB &= \left[ -E\left\{ \left(\sum_{i=1}^N g_i\right) \pd[2]{}{\lambda}
+    \ln \lambda
+  \right\} \right]^{-1}
+\\
+  CRB &= \left[ E\left\{ \sum_{i=1}^N g_i
+  \right\} \cdot \frac{1}{\lambda^2} \right]^{-1}
+\\
+  CRB &= \left[ \frac{N}{\lambda} \right]^{-1} = \frac{\lambda}{N}
+\end{align}
+%
+Per tant, l'estimador $\hat{\lambda}_B^N$ és eficient.
+
+\end{document}
