@@ -31,17 +31,23 @@ plot(lambda ./ (4*N) + lambda^2 / 4, 'Color', colors{3});
 plot(lambda ./ (4*N), 'Color', [.5 .5 .5]);
 
 R = 1000;
-estimated = [];
+lambdas = [];
 for N = 1:20
     g = poissrnd(ones(N,R) * lambda);
-    estimated(N,:,1) = 2/(N*(N+1)) * (1:N) * g;
-    estimated(N,:,2) = sum(g, 1) / N;
-    estimated(N,:,3) = sum(g, 1) / (2*N);
+    lambdas(N,:,1) = 2/(N*(N+1)) * (1:N) * g;
+    lambdas(N,:,2) = sum(g, 1) / N;
+    lambdas(N,:,3) = sum(g, 1) / (2*N);
 end
 
 for i = 1:3
-    plot(mean((estimated(:,:,i)' - lambda).^2), 'x', 'Color', colors{i});
-    plot(mean((round(estimated(:,:,i))' - lambda).^2), '*', 'Color', colors{i});
+    plot(mse(lambdas(:,:,i)', lambda), 'x', 'Color', colors{i});
+    plot(mse(round(lambdas(:,:,i))', lambda), '*', 'Color', colors{i});
 end
 
 legend('MSE\{\lambda_A\}', 'MSE\{\lambda_B\} (CRB)', 'MSE\{\lambda_C\}', 'Var\{\lambda_C\}');
+
+%% Utilitats
+
+function e = mse(x_e, x)
+    e = mean((x_e - x).^2);
+end
